@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mee Love Anis</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        /* Video Background */
+        .video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        /* Fallback Image */
+        .fallback-img {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+            z-index: -2;
+        }
+
+        /* Content Section */
+        .content {
+            position: relative;
+            text-align: center;
+            color: white;
+            padding: 50px;
+        }
+
+        .content h1 {
+            font-size: 3em;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .btn-love {
+            padding: 15px 30px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #e91e63;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-love:hover {
+            background-color: #d81b60;
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .content h1 {
+                font-size: 2em;
+            }
+            .btn-love {
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animation for Button Shake */
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        .btn-love.shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        /* Dark Mode */
+        .dark-mode {
+            background-color: #121212;
+            color: #fff;
+        }
+
+        .dark-mode .btn-love {
+            background-color: #6200ea;
+        }
+
+        .dark-mode .btn-love:hover {
+            background-color: #3700b3;
+        }
+
+        /* Firework Animation */
+        @keyframes firework {
+            0% { transform: scale(0); opacity: 1; }
+            50% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .firework {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: firework 1s ease-out infinite;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Video -->
+    <video class="video-bg" autoplay muted loop>
+        <source src="hati.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- Fallback Image -->
+    <img class="fallback-img" src="fallback.jpg" alt="Background Image">
+
+    <!-- Background Music -->
+    <audio id="loveMusic" loop>
+        <source src="musik.mp3" type="audio/mpeg">
+        Your browser does not support the audio tag.
+    </audio>
+
+    <!-- Content Section -->
+    <div class="content">
+        <h1>Haii Anis, Aku suka sama kamu</h1>
+        <h2>Apakah kamu mau jadi pacarku?</h2>
+        <button class="btn-love" id="toggleMode" class="btn-love" onclick="sendLove()">Jawab Sekarang</button>
+    </div>
+
+    <!-- Heart Canvas -->
+    <canvas id="heartCanvas"></canvas>
+
+    <script>
+        // Memulai musik saat halaman dimuat
+        window.addEventListener('DOMContentLoaded', () => {
+            const music = document.getElementById('loveMusic');
+            const playPromise = music.play();
+
+            if (playPromise !== undefined) {
+                playPromise.catch((error) => {
+                    console.log('Autoplay dibatasi oleh browser:', error);
+                });
+            }
+        });
+
+        // Cek apakah video dapat diputar
+        const video = document.querySelector('.video-bg');
+        const fallback = document.querySelector('.fallback-img');
+
+        // Jika video gagal diputar, tampilkan gambar fallback
+        video.onerror = () => {
+            fallback.style.display = 'block';
+        };
+
+        // Fungsi untuk mengirim pesan WhatsApp
+        function sendLove() {
+            const confirmLove = confirm("Apakah kamu yakin ingin mengirim pesan ini?");
+            if (confirmLove) {
+                const message = encodeURIComponent("Anis, aku suka sama kamu! Mau jadi pacarku?");
+                const phone = "628886491302"; // Ganti dengan nomor WhatsApp tujuan
+                const whatsappURL = `https://wa.me/${phone}?text=${message}`;
+                window.location.href = whatsappURL;
+            }
+        }
+
+        // Teks Dinamis pada Tombol
+        const btnLove = document.querySelector('.btn-love');
+        btnLove.addEventListener('mouseover', () => {
+            btnLove.textContent = "Klik Aku!";
+            btnLove.classList.add('shake');
+        });
+        btnLove.addEventListener('mouseout', () => {
+            btnLove.textContent = "Jawab Sekarang";
+            btnLove.classList.remove('shake');
+        });
+
+        // Dark Mode Toggle
+        const toggleMode = document.getElementById('toggleMode');
+        toggleMode.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+        });
+
+        // Partikel Cinta
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const hearts = [];
+        class Heart {
+            constructor(x, y, size, speedX, speedY) {
+                this.x = x;
+                this.y = y;
+                this.size = size * 2; // Membesarkan ukuran partikel cinta
+                this.speedX = speedX;
+                this.speedY = speedY;
+                this.opacity = Math.random() * 0.5 + 0.5;
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(233, 30, 99, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.bezierCurveTo(this.x - this.size / 2, this.y - this.size / 2, this.x + this.size / 2, this.y - this.size / 2, this.x, this.y);
+                ctx.bezierCurveTo(this.x - this.size / 2, this.y + this.size / 2, this.x + this.size / 2, this.y + this.size / 2, this.x, this.y);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                if (this.y > canvas.height || this.x > canvas.width || this.x < 0) {
+                    this.y = -10;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+        }
+
+        function initHearts() {
+            for (let i = 0; i < 50; i++) {
+                hearts.push(new Heart(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 10 + 5, Math.random() * 2 - 1, Math.random() * 2 + 1));
+            }
+        }
+
+        function animateHearts() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hearts.forEach((heart) => {
+                heart.draw();
+                heart.update();
+            });
+            requestAnimationFrame(animateHearts);
+        }
+
+        initHearts();
+        animateHearts();
+
+        // Firework Effect
+        function createFirework(x, y) {
+            const firework = document.createElement('div');
+            firework.classList.add('firework');
+            firework.style.left = `${x}px`;
+            firework.style.top = `${y}px`;
+            document.body.appendChild(firework);
+            setTimeout(() => firework.remove(), 1000);
+        }
+
+        document.body.addEventListener('click', (event) => {
+            createFirework(event.clientX, event.clientY);
+        });
+    </script>
+</body>
+</html>
